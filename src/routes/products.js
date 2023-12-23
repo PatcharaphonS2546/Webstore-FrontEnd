@@ -1,7 +1,21 @@
 // src/routes/products.js
 const express = require('express');
+const mongoose = require('mongoose');
+const multer = require('multer');
 const router = express.Router();
 const Product = require('../models/Product');
+
+// Multer configuration for file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // Set the destination folder for uploaded files
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname); // Set the filename to be unique
+    },
+});
+
+const upload = multer({ storage: storage });
 
 // Get all products
 router.get('/products', async (req, res) => {
@@ -26,35 +40,42 @@ router.get('/products/:id', async (req, res) => {
     }
 });
 
-// Create a new product
-// Create a new product
-router.post('/products', async (req, res) => {
+// Create a new product with file upload
+router.post('/products', upload.single('productImage'), async (req, res) => {
     const productData = {
         name: req.body.name,
         price: req.body.price,
         description: req.body.description,
+        productImage: req.file ? req.file.path : undefined, // Save the path to the uploaded file
         // Add more fields as needed
     };
 
     try {
-        // Insert the product data into the MongoDB collection
-        const result = await Product.create(productData);
+        // Explicitly set the _id field
+        productData._id = new mongoose.Types.ObjectId();
 
-        // Respond with the product data from the request
+        // Insert the product data into the MongoDB collection
+        await Product.create(productData);
+
+        // Fetch the newly created document from the database
+        const newProduct = await Product.findOne(productData);
+
+        // Respond with the fetched product data
         res.status(201).json({
-            _id: result._id,
-            name: req.body.name,
-            price: req.body.price,
-            description: req.body.description,
-            createdAt: result.createdAt,
-            updatedAt: result.updatedAt,
+            _id: newProduct._id,
+            name: newProduct.name,
+            price: newProduct.price,
+            description: newProduct.description,
+            productImage: newProduct.productImage,
+            createdAt: newProduct.createdAt,
+            updatedAt: newProduct.updatedAt,
             // Add more fields as needed
         });
     } catch (error) {
+        console.error('Error:', error);
         res.status(400).json({ message: error.message });
     }
 });
-
 
 
 // Update a product by ID (PATCH request)
@@ -83,7 +104,7 @@ router.patch('/products/:id', async (req, res) => {
 router.delete('/products/:id', async (req, res) => {
     try {
         const productId = req.params.id;
-        const deletedProduct = await Product.findByIdAndRemove(productId);
+        const deletedProduct = await Product.findByIdAndDelete(productId);
 
         if (!deletedProduct) {
             return res.status(404).json({ message: 'Product not found' });

@@ -11,8 +11,9 @@ const productSchema = new mongoose.Schema({
         required: true,
     },
     description: String,
+    productImage: String, // Store the path to the uploaded file
     // Add more fields as needed
-}, { timestamps: true }); // Add timestamps option
+}, { timestamps: true });
 
 // Make name and price not required during updates
 productSchema.path('name').required(false);
