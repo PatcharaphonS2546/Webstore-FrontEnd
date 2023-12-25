@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>My Cafe</title>
+</head>
+
+<body>
+
+    <div class="nav-container">
+        <div class="nav-head">
+            <h1 class="my">My</h1>
+            <h1 class="cafe">Cafe</h1>
+        </div>
+        <div class="nav-search">
+            <input onkeyup="searchproduct(this)" id="text_search" type="search" name="searchItem" class="search"
+                placeholder="ค้นหาสินค้า....">
+            <div class="dropdown">
+                <button onclick="toggleDropdown()" class="filter-user">
+                    <i class="fa-solid fa-filter"></i>
+                    Filter
+                </button>
+                <ul id="filter-options" class="dropdown-content">
+                    <li onclick="filterProducts('all')">All</li>
+                    <li onclick="filterProducts('coffee')">Coffee</li>
+                    <li onclick="filterProducts('cake')">Cake</li>
+                    <li onclick="filterProducts('kabub')">Kabub</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-user">
+            <a href="#" class="login-user">
+                <i class="fas fa-user"></i>
+                <p>Login/Signin</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="container-feature">
+            <a href="#" class="feature-page">Menu</a>
+            <a href="#" class="feature-page">My orders</a>
+            <a href="#" class="feature-page">History</a>
+        </div>
+        <div id="productlist" class="container-product">
+            <!-- Your product list content goes here -->
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="index.js"></script>
+
+</body>
+
+</html>
